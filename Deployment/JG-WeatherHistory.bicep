@@ -11,12 +11,12 @@ param environment string
 param location string = 'swedencentral'
 
 @secure()
-@description('SQL Server administrator login name.')
-param sqlAdminLogin string
+@description('SQL Server administrator login name. Injected by pipeline at deploy time.')
+param sqlAdminLogin string = ''
 
 @secure()
-@description('SQL Server administrator login password.')
-param sqlAdminPassword string
+@description('SQL Server administrator login password. Injected by pipeline at deploy time.')
+param sqlAdminPassword string = ''
 
 @description('SQL Database SKU name.')
 param sqlSkuName string = 'Basic'
