@@ -53,6 +53,49 @@ module sql 'Modules/sql.bicep' = {
   }
 }
 
+module storage 'Modules/storage.bicep' = {
+  name: 'storage-deploy'
+  scope: rg
+  params: {
+    appName: appName
+    environment: environment
+    location: location
+  }
+}
+
+module asp 'Modules/appserviceplan.bicep' = {
+  name: 'asp-deploy'
+  scope: rg
+  params: {
+    appName: appName
+    environment: environment
+    location: location
+  }
+}
+
+module monitoring 'Modules/monitoring.bicep' = {
+  name: 'monitoring-deploy'
+  scope: rg
+  params: {
+    appName: appName
+    environment: environment
+    location: location
+  }
+}
+
+module func 'Modules/functionapp.bicep' = {
+  name: 'functionapp-deploy'
+  scope: rg
+  params: {
+    appName: appName
+    environment: environment
+    location: location
+    storageAccountName: storage.outputs.storageAccountName
+    appServicePlanId: asp.outputs.appServicePlanId
+    appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
+  }
+}
+
 module kv 'Modules/keyvault.bicep' = {
   name: 'keyvault-deploy'
   scope: rg
@@ -60,6 +103,7 @@ module kv 'Modules/keyvault.bicep' = {
     appName: appName
     environment: environment
     location: location
+    functionAppPrincipalId: func.outputs.functionAppPrincipalId
   }
 }
 
@@ -69,3 +113,4 @@ output sqlServerFqdn string = sql.outputs.sqlServerFqdn
 output sqlDatabaseName string = sql.outputs.sqlDatabaseName
 output keyVaultName string = kv.outputs.keyVaultName
 output keyVaultUri string = kv.outputs.keyVaultUri
+output functionAppName string = func.outputs.functionAppName
