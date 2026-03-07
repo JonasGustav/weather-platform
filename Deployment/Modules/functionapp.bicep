@@ -57,6 +57,11 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
     siteConfig: {
       use32BitWorkerProcess: false
       ftpsState: 'Disabled'
+      cors: {
+        allowedOrigins: [
+          'https://portal.azure.com'
+        ]
+      }
       ipSecurityRestrictions: [
         {
           ipAddress: 'Any'
