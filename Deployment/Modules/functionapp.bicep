@@ -78,7 +78,7 @@ resource storageBlobRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   scope: storageAccount
   name: guid(storageAccount.id, functionApp.id, storageBlobDataOwnerRoleId)
   properties: {
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/${storageBlobDataOwnerRoleId}'
+    roleDefinitionId: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageBlobDataOwnerRoleId}'
     principalId: functionApp.identity.principalId
     principalType: 'ServicePrincipal'
   }
