@@ -2,6 +2,7 @@ param appName string
 param environment string
 param location string
 param functionAppPrincipalId string
+param funcSubnetId string
 param sqlServerFqdn string
 param sqlDatabaseName string
 @secure()
@@ -31,7 +32,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       defaultAction: 'Deny'
       bypass: 'AzureServices'
       ipRules: []
-      virtualNetworkRules: []
+      virtualNetworkRules: [
+        {
+          id: funcSubnetId
+          ignoreMissingVnetServiceEndpoint: false
+        }
+      ]
     }
   }
 }

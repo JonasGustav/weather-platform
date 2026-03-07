@@ -7,6 +7,7 @@ param appInsightsConnectionString string
 param keyVaultUri string
 param seedCities string = 'Stockholm,SE|Gothenburg,SE|Malmö,SE|Uppsala,SE|Västerås,SE|Örebro,SE|Linköping,SE|Helsingborg,SE|Jönköping,SE|Norrköping,SE'
 param agentIpAddress string = ''
+param subnetId string
 
 var functionAppName = 'func-${appName}-${environment}'
 
@@ -52,6 +53,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
+    virtualNetworkSubnetId: subnetId
     siteConfig: {
       use32BitWorkerProcess: false
       ftpsState: 'Disabled'
