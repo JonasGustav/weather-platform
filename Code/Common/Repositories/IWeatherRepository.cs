@@ -1,4 +1,4 @@
-using WeatherPlatform.Common.Entities;
+using WeatherPlatform.Common.Models;
 
 namespace WeatherPlatform.Common.Repositories;
 

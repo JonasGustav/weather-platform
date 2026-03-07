@@ -1,4 +1,4 @@
-namespace WeatherPlatform.Common.Entities;
+namespace WeatherPlatform.Common.Models;
 
 public class Weather
 {
