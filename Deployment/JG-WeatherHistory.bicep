@@ -24,6 +24,9 @@ param sqlSkuName string = 'Basic'
 @description('SQL Database SKU tier.')
 param sqlSkuTier string = 'Basic'
 
+@description('IP address of the deploy agent allowed through SQL firewall. Leave empty to skip.')
+param agentIpAddress string = ''
+
 var resourceGroupName = 'rg-${appName}-${environment}'
 
 resource rg 'Microsoft.Resources/resourceGroups@2023-07-01' = {
@@ -46,6 +49,7 @@ module sql 'Modules/sql.bicep' = {
     sqlAdminPassword: sqlAdminPassword
     sqlSkuName: sqlSkuName
     sqlSkuTier: sqlSkuTier
+    agentIpAddress: agentIpAddress
   }
 }
 

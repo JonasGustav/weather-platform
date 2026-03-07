@@ -11,6 +11,9 @@ param sqlAdminPassword string
 param sqlSkuName string = 'Basic'
 param sqlSkuTier string = 'Basic'
 
+@description('IP address of the deploy agent allowed through SQL firewall. Leave empty to skip.')
+param agentIpAddress string = ''
+
 var sqlServerName = toLower('sql-${appName}-${environment}')
 var sqlDatabaseName = 'sqldb-${appName}-${environment}'
 
@@ -48,6 +51,15 @@ resource allowAzureServices 'Microsoft.Sql/servers/firewallRules@2023-05-01-prev
   properties: {
     startIpAddress: '0.0.0.0'
     endIpAddress: '0.0.0.0'
+  }
+}
+
+resource allowAgentIp 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = if (!empty(agentIpAddress)) {
+  parent: sqlServer
+  name: 'AllowDeployAgent'
+  properties: {
+    startIpAddress: agentIpAddress
+    endIpAddress: agentIpAddress
   }
 }
 
