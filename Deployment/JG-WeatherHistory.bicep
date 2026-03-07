@@ -53,7 +53,19 @@ module sql 'Modules/sql.bicep' = {
   }
 }
 
+module kv 'Modules/keyvault.bicep' = {
+  name: 'keyvault-deploy'
+  scope: rg
+  params: {
+    appName: appName
+    environment: environment
+    location: location
+  }
+}
+
 output resourceGroupName string = rg.name
 output sqlServerName string = sql.outputs.sqlServerName
 output sqlServerFqdn string = sql.outputs.sqlServerFqdn
 output sqlDatabaseName string = sql.outputs.sqlDatabaseName
+output keyVaultName string = kv.outputs.keyVaultName
+output keyVaultUri string = kv.outputs.keyVaultUri
