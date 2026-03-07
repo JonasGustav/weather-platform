@@ -54,6 +54,10 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
           value: storageAccount.name
         }
         {
+          name: 'AzureWebJobsStorage__credential'
+          value: 'managedidentity'
+        }
+        {
           name: 'FUNCTIONS_EXTENSION_VERSION'
           value: '~4'
         }
@@ -78,7 +82,7 @@ resource storageBlobRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   scope: storageAccount
   name: guid(storageAccount.id, functionApp.id, storageBlobDataOwnerRoleId)
   properties: {
-    roleDefinitionId: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageBlobDataOwnerRoleId}'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', storageBlobDataOwnerRoleId)
     principalId: functionApp.identity.principalId
     principalType: 'ServicePrincipal'
   }
