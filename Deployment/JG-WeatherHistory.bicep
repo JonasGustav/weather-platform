@@ -97,6 +97,7 @@ module func 'Modules/functionapp.bicep' = {
     appServicePlanId: asp.outputs.appServicePlanId
     appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
     keyVaultUri: keyVaultUri
+    agentIpAddress: agentIpAddress
   }
 }
 

@@ -6,8 +6,31 @@ param appServicePlanId string
 param appInsightsConnectionString string
 param keyVaultUri string
 param seedCities string = 'Stockholm,SE|Gothenburg,SE|Malmö,SE|Uppsala,SE|Västerås,SE|Örebro,SE|Linköping,SE|Helsingborg,SE|Jönköping,SE|Norrköping,SE'
+param agentIpAddress string = ''
 
 var functionAppName = 'func-${appName}-${environment}'
+
+var scmIpRestrictions = agentIpAddress != '' ? [
+  {
+    ipAddress: '${agentIpAddress}/32'
+    action: 'Allow'
+    priority: 100
+    name: 'Allow deploy agent'
+  }
+  {
+    ipAddress: 'Any'
+    action: 'Deny'
+    priority: 2147483647
+    name: 'Deny all'
+  }
+] : [
+  {
+    ipAddress: 'Any'
+    action: 'Deny'
+    priority: 2147483647
+    name: 'Deny all'
+  }
+]
 
 var storageBlobDataOwnerRoleId = 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
 
@@ -41,14 +64,7 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         }
       ]
       ipSecurityRestrictionsDefaultAction: 'Deny'
-      scmIpSecurityRestrictions: [
-        {
-          ipAddress: 'Any'
-          action: 'Deny'
-          priority: 2147483647
-          name: 'Deny all'
-        }
-      ]
+      scmIpSecurityRestrictions: scmIpRestrictions
       scmIpSecurityRestrictionsDefaultAction: 'Deny'
       appSettings: [
         {
