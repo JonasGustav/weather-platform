@@ -27,7 +27,10 @@ param sqlSkuTier string = 'Basic'
 @description('IP address of the deploy agent allowed through SQL firewall. Leave empty to skip.')
 param agentIpAddress string = ''
 
+
 var resourceGroupName = 'rg-${appName}-${environment}'
+var keyVaultName = toLower('kv-${appName}-${environment}')
+var keyVaultUri = 'https://${keyVaultName}${az.environment().suffixes.keyvaultDns}/'
 
 resource rg 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName
@@ -93,6 +96,7 @@ module func 'Modules/functionapp.bicep' = {
     storageAccountName: storage.outputs.storageAccountName
     appServicePlanId: asp.outputs.appServicePlanId
     appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
+    keyVaultUri: keyVaultUri
   }
 }
 
@@ -104,6 +108,10 @@ module kv 'Modules/keyvault.bicep' = {
     environment: environment
     location: location
     functionAppPrincipalId: func.outputs.functionAppPrincipalId
+    sqlServerFqdn: sql.outputs.sqlServerFqdn
+    sqlDatabaseName: sql.outputs.sqlDatabaseName
+    sqlAdminLogin: sqlAdminLogin
+    sqlAdminPassword: sqlAdminPassword
   }
 }
 

@@ -2,6 +2,12 @@ param appName string
 param environment string
 param location string
 param functionAppPrincipalId string
+param sqlServerFqdn string
+param sqlDatabaseName string
+@secure()
+param sqlAdminLogin string
+@secure()
+param sqlAdminPassword string
 
 var keyVaultName = toLower('kv-${appName}-${environment}')
 
@@ -38,6 +44,14 @@ resource kvSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@20
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
     principalId: functionAppPrincipalId
     principalType: 'ServicePrincipal'
+  }
+}
+
+resource sqlConnectionSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'SqlConnectionString'
+  properties: {
+    value: 'Server=tcp:${sqlServerFqdn},1433;Initial Catalog=${sqlDatabaseName};User ID=${sqlAdminLogin};Password=${sqlAdminPassword};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
   }
 }
 

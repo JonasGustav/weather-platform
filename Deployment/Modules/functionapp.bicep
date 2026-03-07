@@ -4,6 +4,8 @@ param location string
 param storageAccountName string
 param appServicePlanId string
 param appInsightsConnectionString string
+param keyVaultUri string
+param seedCities string = 'Stockholm,SE|Gothenburg,SE|Malmö,SE|Uppsala,SE|Västerås,SE|Örebro,SE|Linköping,SE|Helsingborg,SE|Jönköping,SE|Norrköping,SE'
 
 var functionAppName = 'func-${appName}-${environment}'
 
@@ -72,6 +74,14 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'ApplicationInsightsAgent_EXTENSION_VERSION'
           value: '~3'
+        }
+        {
+          name: 'KeyVaultUri'
+          value: keyVaultUri
+        }
+        {
+          name: 'SeedCities'
+          value: seedCities
         }
       ]
     }

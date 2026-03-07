@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WeatherPlatform.Common.Data;
-using WeatherPlatform.Common.Entities;
+using WeatherPlatform.Common.Models;
 using WeatherPlatform.Common.Repositories;
 
 var connectionString =

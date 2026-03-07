@@ -22,7 +22,7 @@ namespace WeatherPlatform.Common.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WeatherPlatform.Common.Entities.Location", b =>
+            modelBuilder.Entity("WeatherPlatform.Common.Models.Location", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -46,7 +46,7 @@ namespace WeatherPlatform.Common.Migrations
                     b.ToTable("Locations");
                 });
 
-            modelBuilder.Entity("WeatherPlatform.Common.Entities.Weather", b =>
+            modelBuilder.Entity("WeatherPlatform.Common.Models.Weather", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -97,9 +97,9 @@ namespace WeatherPlatform.Common.Migrations
                     b.ToTable("WeatherReadings");
                 });
 
-            modelBuilder.Entity("WeatherPlatform.Common.Entities.Weather", b =>
+            modelBuilder.Entity("WeatherPlatform.Common.Models.Weather", b =>
                 {
-                    b.HasOne("WeatherPlatform.Common.Entities.Location", "Location")
+                    b.HasOne("WeatherPlatform.Common.Models.Location", "Location")
                         .WithMany("WeatherReadings")
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -108,7 +108,7 @@ namespace WeatherPlatform.Common.Migrations
                     b.Navigation("Location");
                 });
 
-            modelBuilder.Entity("WeatherPlatform.Common.Entities.Location", b =>
+            modelBuilder.Entity("WeatherPlatform.Common.Models.Location", b =>
                 {
                     b.Navigation("WeatherReadings");
                 });
