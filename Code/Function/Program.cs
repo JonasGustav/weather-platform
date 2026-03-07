@@ -22,6 +22,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(sqlConnectionString));
 
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
+builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
 
 builder.Services.AddSingleton(secretClient);
 
