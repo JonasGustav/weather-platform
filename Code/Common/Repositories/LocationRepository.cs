@@ -48,4 +48,9 @@ public class LocationRepository : ILocationRepository
         await _context.Locations
             .Include(l => l.WeatherReadings.OrderByDescending(w => w.RecordedAt).Take(1))
             .ToListAsync();
+
+    public async Task<IEnumerable<Location>> FindByNameAsync(string name) =>
+        await _context.Locations
+            .Where(l => l.City.ToLower() == name.ToLower())
+            .ToListAsync();
 }
