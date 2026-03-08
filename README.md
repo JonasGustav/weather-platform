@@ -1,6 +1,8 @@
 # Weather Platform
 
-Weather platform containing an API, an Azure Function sync integration with OpenWeather, and IaC for Azure infrastructure deployment via Bicep and Azure DevOps.
+Weather platform that collects and exposes historical weather data for configured cities. An Azure Function fetches current weather from the OpenWeather API once per hour and stores the readings in a SQL database. A secured REST API provides access to the collected data — querying history, current conditions, and weather extremes (warmest, windiest, foggiest, etc.) across all tracked cities.
+
+Infrastructure is fully defined as code using Bicep and deployed via Azure DevOps pipelines across three environments (dev, test, prod).
 
 ---
 
