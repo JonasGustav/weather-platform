@@ -18,4 +18,6 @@ public class CurrentWeather
     [JsonPropertyName("wind_deg")] public int WindDeg { get; set; }
     [JsonPropertyName("wind_gust")] public decimal? WindGust { get; set; }
     [JsonPropertyName("weather")] public WeatherCondition[]? Weather { get; set; }
+    [JsonPropertyName("rain")] public CurrentPrecipitation? Rain { get; set; }
+    [JsonPropertyName("snow")] public CurrentPrecipitation? Snow { get; set; }
 }

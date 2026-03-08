@@ -7,8 +7,8 @@ public class Weather
     public Location Location { get; set; } = null!;
 
     public DateTime RecordedAt { get; set; }
-    public DateTime Sunrise { get; set; }
-    public DateTime Sunset { get; set; }
+    public DateTime? Sunrise { get; set; }
+    public DateTime? Sunset { get; set; }
     public decimal Temp { get; set; }
     public decimal FeelsLike { get; set; }
     public int Clouds { get; set; }
