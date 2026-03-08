@@ -24,14 +24,20 @@ param sqlSkuName string = 'Basic'
 @description('SQL Database SKU tier.')
 param sqlSkuTier string = 'Basic'
 
-@description('IP address of the deploy agent allowed through SQL firewall. Leave empty to skip.')
+@description('IP address of the deploy agent allowed through SQL firewall. Injected by pipeline at deploy time.')
 param agentIpAddress string = ''
 
-@description('Azure AD Tenant ID for API authentication.')
+@description('Azure AD Tenant ID for API authentication. Injected by pipeline at deploy time.')
 param aadTenantId string = ''
 
-@description('Azure AD Client ID (App Registration) for API authentication.')
+@description('Azure AD Client ID (App Registration) for API authentication. Injected by pipeline at deploy time.')
 param aadClientId string = ''
+
+@description('Email address for alert notifications. Injected by pipeline at deploy time.')
+param alertEmail string = ''
+
+@description('Whether alert rules are enabled.')
+param alertsEnabled bool = false
 
 var resourceGroupName = 'rg-${appName}-${environment}'
 var keyVaultName = toLower('kv-${appName}-${environment}')
@@ -151,6 +157,21 @@ module kv 'Modules/keyvault.bicep' = {
     sqlDatabaseName: sql.outputs.sqlDatabaseName
     sqlAdminLogin: sqlAdminLogin
     sqlAdminPassword: sqlAdminPassword
+  }
+}
+
+module alerts 'Modules/alerts.bicep' = {
+  name: 'alerts-deploy'
+  scope: rg
+  params: {
+    appName: appName
+    environment: environment
+    location: location
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    functionAppName: func.outputs.functionAppName
+    apiAppName: api.outputs.webAppName
+    alertEmail: alertEmail
+    alertsEnabled: alertsEnabled
   }
 }
 

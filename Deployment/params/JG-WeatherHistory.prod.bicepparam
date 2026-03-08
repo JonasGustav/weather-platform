@@ -4,3 +4,4 @@ param environment = 'p'
 param location = 'swedencentral'
 param sqlSkuName = 'Basic'
 param sqlSkuTier = 'Basic'
+param alertsEnabled = true
