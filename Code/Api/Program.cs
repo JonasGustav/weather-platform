@@ -25,9 +25,13 @@ builder.Services.AddAuthentication()
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseAuthentication();
