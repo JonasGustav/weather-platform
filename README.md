@@ -1,8 +1,6 @@
 # Weather Platform
 
-Weather platform that collects and exposes historical weather data for configured cities. An Azure Function fetches current weather from the OpenWeather API once per hour and stores the readings in a SQL database. A secured REST API provides access to the collected data — querying history, current conditions, and weather extremes (warmest, windiest, foggiest, etc.) across all tracked cities.
-
-Infrastructure is fully defined as code using Bicep and deployed via Azure DevOps pipelines across three environments (dev, test, prod).
+Weather platform that collects and exposes historical weather data for configured cities. An Azure Function fetches current weather from the OpenWeather API once per hour and stores the readings in a SQL database. An API provides access to the collected data — querying history, current conditions, and weather extremes (warmest, windiest, foggiest, etc.) across all tracked cities.
 
 ---
 
@@ -306,3 +304,4 @@ The current setup uses a single resource group per environment. Some potential f
 - **Common library as NuGet package** — publish `WeatherPlatform.Common` as a versioned private package rather than a project reference.
 - **Split API and Function** — independent repositories and pipelines for the sync function and the API.
 - **Tie-handling in extreme endpoints** — endpoints like `/warmest` and `/foggiest` currently return whichever record the database happens to return first when multiple records share the same extreme value. There is no tiebreaker. Could be addressed by returning all tied records instead of just one, or find some tiebreaker, for `warmest` maybe highest `feelsLike` value.
+- **Database indexes** — currently only `IX_WeatherReadings_LocationId` exists. At current scale this has little to no impact on performance, but adding indexes for frequently looked up columns would be worth concidering/investigating before expanding to more cities or longer data retention.
