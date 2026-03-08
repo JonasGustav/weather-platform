@@ -2,6 +2,9 @@ param appName string
 param environment string
 param location string
 
+@description('Log retention in days. Min 30, max 730.')
+param logRetentionDays int = 30
+
 var logAnalyticsName = 'log-${appName}-${environment}'
 var appInsightsName = 'appi-${appName}-${environment}'
 
@@ -16,7 +19,7 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
     sku: {
       name: 'PerGB2018'
     }
-    retentionInDays: 30
+    retentionInDays: logRetentionDays
   }
 }
 
@@ -31,7 +34,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   properties: {
     Application_Type: 'web'
     WorkspaceResourceId: logAnalytics.id
-    RetentionInDays: 30
+    RetentionInDays: logRetentionDays
   }
 }
 
