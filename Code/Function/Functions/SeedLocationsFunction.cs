@@ -28,7 +28,6 @@ public class SeedLocationsFunction(
         var raw = _configuration["SeedCities"]
             ?? throw new InvalidOperationException("SeedCities app setting is required.");
 
-        // Format: "CityName,CountryCode|CityName,CountryCode"
         var cities = CityConfigParser.Parse(raw);
 
         var seeded = 0;
