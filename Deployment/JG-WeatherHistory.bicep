@@ -27,6 +27,11 @@ param sqlSkuTier string = 'Basic'
 @description('IP address of the deploy agent allowed through SQL firewall. Leave empty to skip.')
 param agentIpAddress string = ''
 
+@description('Azure AD Tenant ID for API authentication.')
+param aadTenantId string = ''
+
+@description('Azure AD Client ID (App Registration) for API authentication.')
+param aadClientId string = ''
 
 var resourceGroupName = 'rg-${appName}-${environment}'
 var keyVaultName = toLower('kv-${appName}-${environment}')
@@ -108,7 +113,24 @@ module func 'Modules/functionapp.bicep' = {
     appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
     keyVaultUri: keyVaultUri
     agentIpAddress: agentIpAddress
-    subnetId: vnet.outputs.subnetId
+    subnetId: vnet.outputs.funcSubnetId
+  }
+}
+
+module api 'Modules/webapp.bicep' = {
+  name: 'webapp-deploy'
+  scope: rg
+  params: {
+    appName: appName
+    environment: environment
+    location: location
+    appServicePlanId: asp.outputs.appServicePlanId
+    appInsightsConnectionString: monitoring.outputs.appInsightsConnectionString
+    keyVaultUri: keyVaultUri
+    agentIpAddress: agentIpAddress
+    subnetId: vnet.outputs.apiSubnetId
+    aadTenantId: aadTenantId
+    aadClientId: aadClientId
   }
 }
 
@@ -120,7 +142,9 @@ module kv 'Modules/keyvault.bicep' = {
     environment: environment
     location: location
     functionAppPrincipalId: func.outputs.functionAppPrincipalId
-    funcSubnetId: vnet.outputs.subnetId
+    apiPrincipalId: api.outputs.webAppPrincipalId
+    funcSubnetId: vnet.outputs.funcSubnetId
+    apiSubnetId: vnet.outputs.apiSubnetId
     sqlServerFqdn: sql.outputs.sqlServerFqdn
     sqlDatabaseName: sql.outputs.sqlDatabaseName
     sqlAdminLogin: sqlAdminLogin
@@ -135,3 +159,4 @@ output sqlDatabaseName string = sql.outputs.sqlDatabaseName
 output keyVaultName string = kv.outputs.keyVaultName
 output keyVaultUri string = kv.outputs.keyVaultUri
 output functionAppName string = func.outputs.functionAppName
+output apiAppName string = api.outputs.webAppName

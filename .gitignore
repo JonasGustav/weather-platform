@@ -69,7 +69,6 @@ local.settings.json
 
 ### ASP.NET Core ###
 appsettings.*.json
-!appsettings.Development.json
 
 ### Environment / secrets ###
 .env
