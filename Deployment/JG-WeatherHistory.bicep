@@ -19,10 +19,22 @@ param sqlAdminLogin string = ''
 param sqlAdminPassword string = ''
 
 @description('SQL Database SKU name.')
-param sqlSkuName string = 'Basic'
+param sqlSkuName string
 
 @description('SQL Database SKU tier.')
-param sqlSkuTier string = 'Basic'
+param sqlSkuTier string
+
+@description('App Service Plan SKU name.')
+param aspSkuName string
+
+@description('App Service Plan SKU tier.')
+param aspSkuTier string
+
+@description('Storage account SKU.')
+param storageSkuName string
+
+@description('Log Analytics and App Insights retention in days.')
+param logRetentionDays int
 
 @description('IP address of the deploy agent allowed through SQL firewall. Injected by pipeline at deploy time.')
 param agentIpAddress string = ''
@@ -37,7 +49,7 @@ param aadClientId string = ''
 param alertEmail string = ''
 
 @description('Whether alert rules are enabled.')
-param alertsEnabled bool = false
+param alertsEnabled bool
 
 var resourceGroupName = 'rg-${appName}-${environment}'
 var keyVaultName = toLower('kv-${appName}-${environment}')
@@ -76,6 +88,7 @@ module storage 'Modules/storage.bicep' = {
     appName: appName
     environment: environment
     location: location
+    storageSkuName: storageSkuName
   }
 }
 
@@ -86,6 +99,8 @@ module asp 'Modules/appserviceplan.bicep' = {
     appName: appName
     environment: environment
     location: location
+    skuName: aspSkuName
+    skuTier: aspSkuTier
   }
 }
 
@@ -96,6 +111,7 @@ module monitoring 'Modules/monitoring.bicep' = {
     appName: appName
     environment: environment
     location: location
+    logRetentionDays: logRetentionDays
   }
 }
 

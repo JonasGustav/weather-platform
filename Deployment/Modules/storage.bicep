@@ -2,6 +2,9 @@ param appName string
 param environment string
 param location string
 
+@description('Storage SKU. LRS for dev/test, GRS for prod.')
+param storageSkuName string = 'Standard_LRS'
+
 var storageAccountName = toLower('st${replace(appName, '-', '')}${environment}')
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
@@ -12,7 +15,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     environment: environment
   }
   sku: {
-    name: 'Standard_LRS'
+    name: storageSkuName
   }
   kind: 'StorageV2'
   properties: {
