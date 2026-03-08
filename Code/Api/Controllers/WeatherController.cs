@@ -22,7 +22,7 @@ public class WeatherController(ILocationRepository locationRepo, IWeatherReposit
     }
 
     [HttpGet("history")]
-    public async Task<ActionResult<PagedResponse<WeatherWithLocationDto>>> History(
+    public async Task<ActionResult<WeatherHistoryResponse>> History(
         [FromQuery] string city,
         [FromQuery] DateTime? fromDate,
         [FromQuery] DateTime? toDate,
@@ -35,9 +35,18 @@ public class WeatherController(ILocationRepository locationRepo, IWeatherReposit
         var (items, totalCount) = await weatherRepo.GetHistoryAsync(
             locations.Select(l => l.Id), fromDate, toDate, page, pageSize);
 
-        return Ok(new PagedResponse<WeatherWithLocationDto>
+        var first = items.FirstOrDefault();
+        if (first is null) return NotFound($"No history found for '{city}'.");
+
+        return Ok(new WeatherHistoryResponse
         {
-            Items = items.Select(Map).ToList(),
+            Location = new LocationDto
+            {
+                City = first.Location.City,
+                Lat = first.Location.Lat,
+                Lon = first.Location.Lon
+            },
+            Records = items.Select(MapWeather).ToList(),
             Page = page,
             PageSize = pageSize,
             TotalCount = totalCount,
@@ -88,19 +97,21 @@ public class WeatherController(ILocationRepository locationRepo, IWeatherReposit
             Lat = w.Location.Lat,
             Lon = w.Location.Lon
         },
-        Weather = new WeatherDto
-        {
-            RecordedAt = w.RecordedAt,
-            Sunrise = w.Sunrise,
-            Sunset = w.Sunset,
-            Temp = w.Temp,
-            FeelsLike = w.FeelsLike,
-            Clouds = w.Clouds,
-            Uvi = w.Uvi,
-            Visibility = w.Visibility,
-            WindSpeed = w.WindSpeed,
-            Rain1h = w.Rain1h,
-            Snow1h = w.Snow1h
-        }
+        Weather = MapWeather(w)
+    };
+
+    private static WeatherDto MapWeather(Weather w) => new()
+    {
+        RecordedAt = w.RecordedAt,
+        Sunrise = w.Sunrise,
+        Sunset = w.Sunset,
+        Temp = w.Temp,
+        FeelsLike = w.FeelsLike,
+        Clouds = w.Clouds,
+        Uvi = w.Uvi,
+        Visibility = w.Visibility,
+        WindSpeed = w.WindSpeed,
+        Rain1h = w.Rain1h,
+        Snow1h = w.Snow1h
     };
 }
