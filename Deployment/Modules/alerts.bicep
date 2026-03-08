@@ -75,7 +75,7 @@ resource funcSyncMissedAlert 'Microsoft.Insights/scheduledQueryRules@2023-03-15-
     severity: 1
     enabled: alertsEnabled
     evaluationFrequency: 'PT1H'
-    windowSize: 'PT1H10M'
+    windowSize: 'PT2H'
     scopes: [logAnalyticsWorkspaceId]
     criteria: {
       allOf: [
