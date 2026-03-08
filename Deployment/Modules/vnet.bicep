@@ -31,9 +31,8 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
             }
           ]
           serviceEndpoints: [
-            {
-              service: 'Microsoft.KeyVault'
-            }
+            { service: 'Microsoft.KeyVault' }
+            { service: 'Microsoft.Sql' }
           ]
         }
       }
@@ -50,9 +49,8 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-09-01' = {
             }
           ]
           serviceEndpoints: [
-            {
-              service: 'Microsoft.KeyVault'
-            }
+            { service: 'Microsoft.KeyVault' }
+            { service: 'Microsoft.Sql' }
           ]
         }
       }

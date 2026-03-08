@@ -58,6 +58,8 @@ module sql 'Modules/sql.bicep' = {
     sqlSkuName: sqlSkuName
     sqlSkuTier: sqlSkuTier
     agentIpAddress: agentIpAddress
+    funcSubnetId: vnet.outputs.funcSubnetId
+    apiSubnetId: vnet.outputs.apiSubnetId
   }
 }
 
