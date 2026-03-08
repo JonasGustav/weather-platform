@@ -2,6 +2,20 @@
 
 Weather platform containing an API, Azure Function integration with OpenWeather, and IaC for Azure infrastructure deployment.
 
+Talking points for later documetation: 
+Costs
+Security (Networking, Secrets, Devops variables, Entra)
+Multiples with same City names
+Split Resourse Groups/Repos
+Egg/Chicken dilemma with secrets
+Resourses used and how they interact
+Code overview
+Pipelines (Github Actions/Devops pipe)
+Local development
+Manual setup steps
+Future plans (What copuld expand upon, new features, improvements)
+Local Agent devops
+
 ## Initial plan
 
 ### Data Sync
