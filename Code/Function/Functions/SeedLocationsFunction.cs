@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using WeatherPlatform.Common.Models;
 using WeatherPlatform.Common.Repositories;
+using WeatherPlatform.Function.Helpers;
 using WeatherPlatform.Function.Services;
 
 namespace WeatherPlatform.Function.Functions;
@@ -28,13 +29,7 @@ public class SeedLocationsFunction(
             ?? throw new InvalidOperationException("SeedCities app setting is required.");
 
         // Format: "CityName,CountryCode|CityName,CountryCode"
-        var cities = raw.Split('|', StringSplitOptions.RemoveEmptyEntries)
-            .Select(entry =>
-            {
-                var parts = entry.Trim().Split(',');
-                return (City: parts[0].Trim(), CountryCode: parts.Length > 1 ? parts[1].Trim() : "SE");
-            })
-            .ToList();
+        var cities = CityConfigParser.Parse(raw);
 
         var seeded = 0;
         var skipped = 0;
