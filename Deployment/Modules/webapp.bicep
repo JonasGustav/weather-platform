@@ -46,6 +46,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
   properties: {
     serverFarmId: appServicePlanId
     httpsOnly: true
+    publicNetworkAccess: 'Enabled'
     virtualNetworkSubnetId: subnetId
     siteConfig: {
       use32BitWorkerProcess: false
