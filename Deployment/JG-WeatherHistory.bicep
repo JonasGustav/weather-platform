@@ -33,6 +33,12 @@ param aadTenantId string = ''
 @description('Azure AD Client ID (App Registration) for API authentication.')
 param aadClientId string = ''
 
+@description('Email address for alert notifications.')
+param alertEmail string = ''
+
+@description('Whether alert rules are enabled. Should only be true in production.')
+param alertsEnabled bool = false
+
 var resourceGroupName = 'rg-${appName}-${environment}'
 var keyVaultName = toLower('kv-${appName}-${environment}')
 var keyVaultUri = 'https://${keyVaultName}${az.environment().suffixes.keyvaultDns}/'
@@ -151,6 +157,21 @@ module kv 'Modules/keyvault.bicep' = {
     sqlDatabaseName: sql.outputs.sqlDatabaseName
     sqlAdminLogin: sqlAdminLogin
     sqlAdminPassword: sqlAdminPassword
+  }
+}
+
+module alerts 'Modules/alerts.bicep' = {
+  name: 'alerts-deploy'
+  scope: rg
+  params: {
+    appName: appName
+    environment: environment
+    location: location
+    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    functionAppName: func.outputs.functionAppName
+    apiAppName: api.outputs.webAppName
+    alertEmail: alertEmail
+    alertsEnabled: alertsEnabled
   }
 }
 
