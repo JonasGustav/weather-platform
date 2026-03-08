@@ -14,6 +14,9 @@ param sqlSkuTier string = 'Basic'
 @description('IP address of the deploy agent allowed through SQL firewall. Leave empty to skip.')
 param agentIpAddress string = ''
 
+param funcSubnetId string
+param apiSubnetId string
+
 var sqlServerName = toLower('sql-${appName}-${environment}')
 var sqlDatabaseName = 'sqldb-${appName}-${environment}'
 
@@ -45,12 +48,19 @@ resource sqlDatabase 'Microsoft.Sql/servers/databases@2023-05-01-preview' = {
   }
 }
 
-resource allowAzureServices 'Microsoft.Sql/servers/firewallRules@2023-05-01-preview' = {
+resource allowFuncSubnet 'Microsoft.Sql/servers/virtualNetworkRules@2023-05-01-preview' = {
   parent: sqlServer
-  name: 'AllowAzureServices'
+  name: 'AllowFuncSubnet'
   properties: {
-    startIpAddress: '0.0.0.0'
-    endIpAddress: '0.0.0.0'
+    virtualNetworkSubnetId: funcSubnetId
+  }
+}
+
+resource allowApiSubnet 'Microsoft.Sql/servers/virtualNetworkRules@2023-05-01-preview' = {
+  parent: sqlServer
+  name: 'AllowApiSubnet'
+  properties: {
+    virtualNetworkSubnetId: apiSubnetId
   }
 }
 
