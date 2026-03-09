@@ -16,7 +16,6 @@ Weather platform that collects and exposes historical weather data for configure
 - [API Endpoints](#api-endpoints)
 - [Database Schema](#database-schema)
 - [Limitations](#limitations)
-- [Split Resource Groups / Repos](#split-resource-groups--repos)
 - [Future Plans](#future-plans)
 
 ---
