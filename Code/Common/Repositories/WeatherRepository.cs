@@ -89,6 +89,9 @@ public class WeatherRepository : IWeatherRepository
     public Task<Weather?> GetWarmestAsync(DateTime? from, DateTime? to) =>
         GetExtremeBaseQuery(from, to).OrderByDescending(w => w.Temp).FirstOrDefaultAsync();
 
+    public Task<Weather?> GetColdestAsync(DateTime? from, DateTime? to) =>
+        GetExtremeBaseQuery(from, to).OrderBy(w => w.Temp).FirstOrDefaultAsync();
+
     public Task<Weather?> GetCloudiestAsync(DateTime? from, DateTime? to) =>
         GetExtremeBaseQuery(from, to).OrderByDescending(w => w.Clouds).FirstOrDefaultAsync();
 

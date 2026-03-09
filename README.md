@@ -1,6 +1,6 @@
 # Weather Platform
 
-Weather platform that collects and exposes historical weather data for configured cities. An Azure Function fetches current weather from the OpenWeather API once per hour and stores the readings in a SQL database. An API provides access to the collected data — querying history, current conditions, and weather extremes (warmest, windiest, foggiest, etc.) across all tracked cities.
+Weather platform that collects and exposes historical weather data for configured cities. An Azure Function fetches current weather from the OpenWeather API once per hour and stores the readings in a SQL database. An API provides access to the collected data — weather history, current conditions, and weather extremes (warmest, windiest, foggiest, etc.) across all tracked cities.
 
 ---
 
@@ -44,13 +44,6 @@ Deployment/
   templates/                       # Shared deploy job template
   variables/                       # Per-environment variable files
 ```
-
-**Common** is a shared project referenced by both the API and Function. It contains EF Core models, AppDbContext, migrations, and db repository.
-
-**SeedLocations** is an HTTP-triggered function that resolves city names to coordinates via the OpenWeather Geocoding API and inserts them into the `Locations` table. Cities are configured via the `SeedCities` app setting in the format `CityName,CountryCode|CityName,CountryCode`. Already-seeded locations are skipped based on coordinates.
-
-**SyncWeather** is a timer-triggered function running every hour (`0 0 * * * *`). It fetches current weather for every location in the database and inserts a new weather record. Failures per city are logged individually and do not abort the overall sync.
-
 ---
 
 ## Resources and How They Interact
@@ -73,12 +66,6 @@ Azure App Service (API)
   - Authenticated via Azure AD Bearer token
   - Reads weather data from SQL
 ```
-
-- **Function App** and **API** both use system-assigned **managed identities** to authenticate to Key Vault and retrieve the SQL connection string. No credentials are stored in app settings.
-- **Function App** runs on the same App Service Plan as the API (shared `B1` plan).
-- **VNet** ensures both the Function App and API connect to resources over private subnet routes.
-- **Application Insights** is connected to Log Analytics. Alert rules are configured for warning-level logs and missed sync runs (prod only).
-- **Azure Storage** is used by the Function App runtime only, not for weather data.
 
 ---
 
@@ -230,7 +217,8 @@ All endpoints require a Bearer token (`Authorization: Bearer <token>`). The toke
 |--------|------------------------|-------------------------------------------------------|
 | GET    | /weather/current       | Latest reading per location matching city name        |
 | GET    | /weather/history       | Paginated history for a city, with optional date range|
-| GET    | /weather/warmest       | Highest temperature   |
+| GET    | /weather/warmest       | Highest temperature                                   |
+| GET    | /weather/coldest       | Lowest temperature                                    |
 | GET    | /weather/cloudiest     | Highest cloud coverage                                |
 | GET    | /weather/highestuvi    | Highest UV index                                      |
 | GET    | /weather/foggiest      | Lowest visibility                                     |
@@ -285,22 +273,12 @@ When querying the OpenWeather Geocoding API by city name, multiple results can b
 
 ---
 
-## Split Resource Groups / Repos
-
-The current setup uses a single resource group per environment. Some potential future splits:
-
-- **Common library as a NuGet package** — `WeatherPlatform.Common` (models, EF, repositories) published as a private NuGet/artifact feed package, giving the API and Function versioned, independent dependencies.
-- **Split API and Function into separate repos/pipelines** — independent releases for the sync job and the API.
-- **Shared infrastructure resource group** — Key Vault and monitoring etc. could live in a shared RG separate from the application workloads. This would also allow DevOps variable secrets to migrate into that shared Key Vault, reducing the number of variables managed in DevOps directly.
-
----
-
 ## Future Plans
 
 - **More cities** — Requires awareness of the OpenWeather call limit and potential city name collision handling.
 - **Restructure resource groups** — split shared infrastructure from applications.
 - **Event-driven notifications** — alert on weather events such as a new temperature record or extreme conditions (e.g. via Logic App).
 - **Common library as NuGet package** — publish `WeatherPlatform.Common` as a versioned private package rather than a project reference.
-- **Split API and Function** — independent repositories and pipelines for the sync function and the API.
+- **Split API and Function** — independent pipelines for the sync function and the API.
 - **Tie-handling in extreme endpoints** — endpoints like `/warmest` and `/foggiest` currently return whichever record the database happens to return first when multiple records share the same extreme value. There is no tiebreaker. Could be addressed by returning all tied records instead of just one, or find some tiebreaker, for `warmest` maybe highest `feelsLike` value.
 - **Database indexes** — currently only `IX_WeatherReadings_LocationId` exists. At current scale this has little to no impact on performance, but adding indexes for frequently looked up columns would be worth concidering/investigating before expanding to more cities or longer data retention.
