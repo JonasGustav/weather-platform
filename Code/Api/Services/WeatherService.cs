@@ -37,35 +37,40 @@ public class WeatherService(ILocationRepository locationRepo, IWeatherRepository
     }
 
     public async Task<WeatherWithLocationDto?> GetWarmestAsync(DateTime? from, DateTime? to) =>
-        Map(await weatherRepo.GetWarmestAsync(from, to));
+        await MapAsync(weatherRepo.GetWarmestAsync(from, to));
 
     public async Task<WeatherWithLocationDto?> GetColdestAsync(DateTime? from, DateTime? to) =>
-        Map(await weatherRepo.GetColdestAsync(from, to));
+        await MapAsync(weatherRepo.GetColdestAsync(from, to));
 
     public async Task<WeatherWithLocationDto?> GetCloudiestAsync(DateTime? from, DateTime? to) =>
-        Map(await weatherRepo.GetCloudiestAsync(from, to));
+        await MapAsync(weatherRepo.GetCloudiestAsync(from, to));
 
     public async Task<WeatherWithLocationDto?> GetHighestUviAsync(DateTime? from, DateTime? to) =>
-        Map(await weatherRepo.GetHighestUviAsync(from, to));
+        await MapAsync(weatherRepo.GetHighestUviAsync(from, to));
 
     public async Task<WeatherWithLocationDto?> GetFoggiestAsync(DateTime? from, DateTime? to) =>
-        Map(await weatherRepo.GetFoggiestAsync(from, to));
+        await MapAsync(weatherRepo.GetFoggiestAsync(from, to));
 
     public async Task<WeatherWithLocationDto?> GetWindiestAsync(DateTime? from, DateTime? to) =>
-        Map(await weatherRepo.GetWindiestAsync(from, to));
+        await MapAsync(weatherRepo.GetWindiestAsync(from, to));
 
     public async Task<WeatherWithLocationDto?> GetMostRainAsync(DateTime? from, DateTime? to) =>
-        Map(await weatherRepo.GetMostRainAsync(from, to));
+        await MapAsync(weatherRepo.GetMostRainAsync(from, to));
 
     public async Task<WeatherWithLocationDto?> GetMostSnowAsync(DateTime? from, DateTime? to) =>
-        Map(await weatherRepo.GetMostSnowAsync(from, to));
+        await MapAsync(weatherRepo.GetMostSnowAsync(from, to));
 
-    private static WeatherWithLocationDto? Map(Weather? w) =>
-        w is null ? null : new WeatherWithLocationDto
-        {
-            Location = new LocationDto { City = w.Location.City, Lat = w.Location.Lat, Lon = w.Location.Lon },
-            Weather = MapWeather(w)
-        };
+    private static async Task<WeatherWithLocationDto?> MapAsync(Task<Weather?> query)
+    {
+        var weather = await query;
+        return weather is null ? null : Map(weather);
+    }
+
+    private static WeatherWithLocationDto Map(Weather w) => new()
+    {
+        Location = new LocationDto { City = w.Location.City, Lat = w.Location.Lat, Lon = w.Location.Lon },
+        Weather = MapWeather(w)
+    };
 
     private static WeatherDto MapWeather(Weather w) => new()
     {
