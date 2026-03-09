@@ -58,6 +58,10 @@ public class WeatherController(ILocationRepository locationRepo, IWeatherReposit
     public Task<ActionResult<WeatherWithLocationDto>> Warmest([FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate) =>
         GetExtreme(() => weatherRepo.GetWarmestAsync(fromDate, toDate));
 
+    [HttpGet("coldest")]
+    public Task<ActionResult<WeatherWithLocationDto>> Coldest([FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate) =>
+        GetExtreme(() => weatherRepo.GetColdestAsync(fromDate, toDate));
+
     [HttpGet("cloudiest")]
     public Task<ActionResult<WeatherWithLocationDto>> Cloudiest([FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate) =>
         GetExtreme(() => weatherRepo.GetCloudiestAsync(fromDate, toDate));
