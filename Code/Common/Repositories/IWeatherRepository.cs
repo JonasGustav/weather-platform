@@ -9,6 +9,7 @@ public interface IWeatherRepository : IRepository<Weather>
     Task<IEnumerable<Weather>> GetLatestForLocationsAsync(IEnumerable<int> locationIds);
     Task<(IEnumerable<Weather> Items, int TotalCount)> GetHistoryAsync(IEnumerable<int> locationIds, DateTime? from, DateTime? to, int page, int pageSize);
     Task<Weather?> GetWarmestAsync(DateTime? from, DateTime? to);
+    Task<Weather?> GetColdestAsync(DateTime? from, DateTime? to);
     Task<Weather?> GetCloudiestAsync(DateTime? from, DateTime? to);
     Task<Weather?> GetHighestUviAsync(DateTime? from, DateTime? to);
     Task<Weather?> GetFoggiestAsync(DateTime? from, DateTime? to);
