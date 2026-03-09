@@ -2,6 +2,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using WeatherPlatform.Api.Services;
 using WeatherPlatform.Common.Data;
 using WeatherPlatform.Common.Repositories;
 
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<ILocationRepository, LocationRepository>();
 builder.Services.AddScoped<IWeatherRepository, WeatherRepository>();
+builder.Services.AddScoped<IWeatherService, WeatherService>();
 
 builder.Services.AddAuthentication()
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
